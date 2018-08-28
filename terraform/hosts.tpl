@@ -1,0 +1,5 @@
+[master]
+${master}
+
+[worker]
+${worker}

@@ -1,0 +1,50 @@
+---
+- hosts: all
+  remote_user: root
+  tasks:
+    - name: upgrade all packages
+      yum:
+        name: '*'
+        state: latest
+    - name: disable selinux
+      command: setenforce 0
+    - name: install docker package
+      yum:
+        name: docker
+        state: latest
+    - name: ensure docker is running
+      service:
+        name: docker
+        enabled: yes
+        state: started
+    - name: add kubernetes repository
+      yum_repository:
+        name: kubernetes
+        description: kubernetes repository
+        baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+        enabled: yes
+        gpgcheck: yes
+        repo_gpgcheck: yes
+        gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    - name: install kubectl package
+      yum:
+        name: kubectl
+        state: latest
+    - name: install kubelet package
+      yum:
+        name: kubelet
+        state: latest
+    - name: install kubeadm package
+      yum:
+        name: kubeadm
+        state: latest
+    - name: ensure kubelet is running
+      service:
+        name: kubelet
+        enabled: yes
+        state: started
+    - name: configure ipv6 call
+      command: sysctl net.bridge.bridge-nf-call-ip6tables=1
+    - name: configure ipv4 call
+      command: sysctl net.bridge.bridge-nf-call-iptables=1
+

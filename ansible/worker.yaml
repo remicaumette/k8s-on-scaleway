@@ -1,0 +1,17 @@
+---
+- hosts: master
+  remote_user: root
+  tasks:
+    - name: create token
+      command: kubeadm token create --print-join-command
+      register: join_command
+- hosts: worker
+  remote_user: root
+  tasks:
+    - name: kubeadm join
+      command: "{{hostvars[groups['master'][0]]['join_command'].stdout}}"
+    - name: configure kubectl
+      shell: |
+        mkdir $HOME/.kube/
+        cp -f /etc/kubernetes/kubelet.conf $HOME/.kube/config
+
