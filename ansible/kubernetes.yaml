@@ -8,6 +8,7 @@
         state: latest
     - name: disable selinux
       command: setenforce 0
+      ignore_errors: yes
     - name: install docker package
       yum:
         name: docker
